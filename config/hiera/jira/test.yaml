@@ -1,0 +1,24 @@
+---
+
+# avst-wizard --hostname test --product_type jira --base_url http://jira.vagrant
+
+user_data:
+    '/secure/SetupDatabase!default.jspa':
+        values:
+            jdbcHostname: "localhost"
+            jdbcDatabase: "jira"
+            jdbcUsername: "jirauser"
+            jdbcPassword: "jirapass"
+    '/secure/SetupApplicationProperties!default.jspa':
+        values:
+            title: "My Company"
+            baseURL: "http://jira.vagrant:8888"
+    '/secure/SetupLicense!default.jspa':
+        values:
+            setupLicenseKey: |
+                AAABBQ0ODAoPeNp9UE1rg0AQve+vWOjZ4Gpsg7AH0T0Y/Ahqc8plaqbtlmQru6sk/74aC/3AdmBge
+                O/N483cNT3SLSjKfOpuQm8dBvc0rhvquSwgCZpWy87Kd8W3aRUdQioGOPUwISTWeBsSsMgnveMyh
+                63Jm9SwymSLyqA4ytu2KBpR7aq0FuTLgVvd4w95c+2wgDPyuMxzUcVplM08XjrUdoVLu9BaOeAMn
+                GafPWoziTySg1QWFagWxaWT+vot7YPDfFLqF1DSzKYH+k9FR+gsDNLYvxRznqI/P6Eunx/NmII7j
+                NSi4GM7WcB8dzN+6PPaNOFZmiwxy1F3vW5fweDvh38AcSeI+DAsAhRJhI3dyXyrgCc+/LF9LiEqV
+                WY+vwIUBIu7WdW2Tqt1OlEe8dAjn4F3vlk=X02dd

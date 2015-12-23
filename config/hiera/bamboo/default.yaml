@@ -1,0 +1,72 @@
+---
+
+required_config:
+    '/setup/setupLicense.action':
+        licenseString: "license"
+    '/setup/setupGeneralConfiguration.action':
+        baseUrl: "base_url" # "http://bamboo.vagrant"
+        installDir: "install_dir" #/opt/bamboo
+        instanceName: "instance_name"
+    '/setup/setupDatabase.action':
+        dbConfigInfo.databaseUrl: "database_url" # "jdbc:mysql://localhost/bamboo?autoReconnect=true"
+        dbConfigInfo.userName: "database_user"
+        dbConfigInfo.password: "database_pass"
+    '/setup/setupAdminUser.action':
+        username: "admin_user"
+        password: "admin_pass"
+        confirmPassword: "admin_pass"
+        fullName: "admin_full_name"
+        email: "admin_email"
+
+stages:
+    '/setup/setupLicense.action':
+        post_url: 'setup/validateLicense.action'
+        values:
+            licenseString: "%{license}"
+            customInstall: "Custom+installation"
+    '/setup/setupGeneralConfiguration.action':
+        post_url: 'setup/validateGeneralConfiguration.action'
+        values:
+            instanceName: "%{instance_name}"
+            baseUrl: "%{base_url}"
+            installDir: "%{install_dir}"
+            configDir: "%{install_dir}/home/xml-data/configuration"
+            buildDir: "%{install_dir}/home/xml-data/builds"
+            buildWorkingDir: "%{install_dir}/home/xml-data/build-dir"
+            artifactsDir: "%{install_dir}/home/artifacts"
+            brokerUrl: "tcp://0.0.0.0:54663?wireFormat.maxInactivityDuration=300000"
+            save: "Continue"
+    '/setup/setupDatabase.action':
+        wait_for_next_state: 20
+        post_url: 'setup/performSetupDatabaseConnection.action'
+        values:
+            selectedDatabase: "mysql"
+            connectionChoice: "jdbcConnection"
+            datasourceName: ""
+            dbConfigInfo.driverClassName: "com.mysql.jdbc.Driver"
+            dbConfigInfo.databaseUrl: "%{database_url}"
+            dbConfigInfo.userName: "%{database_user}"
+            dbConfigInfo.password: "%{database_pass}"
+            checkBoxFields: "dataOverwrite"
+            save: "Continue"
+    '/setup/setupSelectImport.action':
+        post_url: 'setup/performImportData.action'
+        values:
+            dataOption: "clean"
+            importPath: ""
+            save: "Continue"
+    '/setup/setupAdminUser.action':
+        post_url: 'setup/performSetupAdminUser.action'
+        values:
+            username: "%{admin_user}"
+            password: "%{admin_pass}"
+            confirmPassword: "%{admin_pass}"
+            fullName: "%{admin_full_name}"
+            email: "%{admin_email}"
+            save: "Finish"
+    '/setup/finishsetup.action':
+        final: true
+    '/start.action':
+        final: true
+    '/userlogin!default.action':
+        final: true

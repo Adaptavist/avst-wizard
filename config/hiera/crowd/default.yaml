@@ -1,0 +1,102 @@
+---
+
+required_config:
+    '/console/setup/setuplicense.action':
+        key: "license"
+    '/console/setup/setupoptions.action':
+        baseURL: "base_url" # "http://localhost"
+        title: "instance_name"
+    '/console/setup/setupdatabase.action':
+        jdbcUrl: "database_url" # ""jdbc:mysql://localhost/crowd?autoReconnect=true&characterEncoding=utf8&useUnicode=true"
+        jdbcUsername: "database_user"
+        jdbcPassword: "database_pass"
+    '/console/setup/defaultadministrator.action':
+        email: "admin_email"
+        name: "admin_user"
+        password: "admin_pass"
+        firstname: "admin_first_name"
+        lastname: "admin_last_name"
+    '/console/setup/mailserver.action':
+        notificationEmail: "notification_mail"
+        from: "from_mail_address"
+        host: "mailserver_host"
+
+optional_config:
+    passwordRegex: "password_regex"
+    passwordComplexityMessage: "password_complexity_message"
+    username: "mailserver_user"
+    password: "mailserver_pass"
+
+stages:
+    '/console/setup/setuplicense.action':
+        post_url: 'console/setup/setuplicense!update.action'
+        values:
+            key: "%{license}"
+    '/console/setup/installtype.action':
+        post_url: 'console/setup/installtype!update.action'
+        values:
+            installOption: "install.new"
+    '/console/setup/setupdatabase.action':
+        post_url: 'console/setup/setupdatabase!update.action'
+        values:
+            databaseOption: "db.jdbc"
+            jdbcDatabaseType: "mysql"
+            jdbcDriverClassName: "com.mysql.jdbc.Driver"
+            jdbcUrl: "%{database_url}"
+            jdbcUsername: "%{database_user}"
+            jdbcPassword: "%{database_pass}"
+            jdbcHibernateDialect: "org.hibernate.dialect.MySQL5InnoDBDialect"
+            jdbcOverwriteData: "false"
+            datasourceDatabaseType: ""
+            datasourceJndiName: ""
+            datasourceHibernateDialect: ""
+    '/console/setup/setupoptions.action':
+        post_url: 'console/setup/setupoptions!update.action'
+        values:
+            title: "%{instance_name}"
+            sessionTime: "30"
+            baseURL: "%{base_url}"
+    '/console/setup/mailserver.action':
+        post_url: 'console/setup/mailserver!update.action'
+        values:
+            notificationEmail: "%{notification_mail}"
+            from: "%{from_mail_address}"
+            prefix: "[Crowd+-+Atlassian+Crowd]"
+            jndiMailActive: "false"
+            host: "%{mailserver_host}"
+            port: "25"
+            username: "%{mailserver_user}"
+            password: "%{mailserver_pass}"
+            jndiLocation: ""
+    '/console/setup/directoryinternalsetup.action':
+        post_url: 'console/setup/directoryinternalsetup!update.action'
+        values:
+            name: "Crowd+server"
+            description: ""
+            passwordRegex: "%{password_regex}"
+            passwordComplexityMessage: "%{password_complexity_message}"
+            passwordMaxAttempts: "0"
+            passwordMaxChangeTime: "0"
+            passwordHistoryCount: "0"
+            userEncryptionMethod: "atlassian-security"
+    '/console/setup/defaultadministrator.action':
+        post_url: 'console/setup/defaultadministrator!update.action'
+        values:
+            ID: ""
+            email: "%{admin_email}"
+            name: "%{admin_user}"
+            password: "%{admin_pass}"
+            passwordConfirm: "%{admin_pass}"
+            firstname: "%{admin_first_name}"
+            lastname: "%{admin_last_name}"
+    '/console/setup/integration.action':
+        post_url: 'console/setup/integration!update.action'
+        values:
+            configureOpenIDServer: "false"
+            configureDemoApp: "false"
+    '/console/setup/finishsetup.action':
+        final: true
+    '/console/login.action':
+        final: true
+    '/console/secure/console.action':
+        final: true

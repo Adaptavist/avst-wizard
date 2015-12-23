@@ -1,0 +1,111 @@
+---
+
+## Stash
+# license: |
+#     AAABCw0ODAoPeNp9kEFrgzAUx+/5FIGdLbGtuAo5FPXgsDpmux3WHd7StzagmSRR6refVmFjuAVye
+#     e+X33v5373giT6AosynzAvYKlivaFjs6ZK5HonQCC1rKz8VLyyYCz2oUlbS9o8OBrWhrymeQXRvx
+#     4DGLZQNDCxNpUBlkIQab4UILPLB6DDXYT75RrnVDRIzuBcgrGxxrJSj4bmfMVBLsgOpLCpQAuNrL
+#     XX3w+kPzlyfQUkzWo/0n7M9QW2hlcb+RUwLTd/YdzVmUCEP890ufgqTbUqKOOP9dVKPbTZrdk8mN
+#     ol4mkRznfmtx0F4rVHbBc7GkjXVO+r84xY4d1zy2GhxAYO/U/0Ch8yNOjAtAhQjwkVGno3zAyL99
+#     Fyg2ejlO9WwEQIVAIOx98UhQPj03J+qRv2/757ZyiwpX02dl
+# base_url: "http://localhost"
+# database_url: "localhost"
+# database_name: "stash"
+# database_user: "stash"
+# database_pass: "stashpass"
+# admin_user: "admin"
+# admin_full_name: "admin admin"
+# admin_email: "admin@admin.com"
+# admin_pass: "admin"
+# instance_name: "Stash"
+
+##Fecru
+# license: |
+#     AAAA+w0ODAoPeNp9UE1PwzAMvedXROLcqSl0sEo5TG2RivqB2OC0ixcMROpC5STV9u9Z6cTGNLBky
+#     R/Pz8++uifNH8BwMeXhdRLHiYh4uljyKBQxy9Aq0p3Tn0am5JVet7hKeN5D62GospTwO8jAoRxmg
+#     lAEYsrUAT0ptUJjcbnrsIYNyrSpqvwpLeblEYPbDslN8IdWOvLI8rO8HalekOxQi1gF2jg0YBTm2
+#     07T7kTF7S8Vtd+skZq3Z7sfloFgDb2D0XZkX/F/bP4KnYNeW/cX4rgGlNM9jmoXeS33HpSxuLmbi
+#     Rk7fKLIZFlklzqXb3j0pD7A4vmHvwCjv4bxMC0CFQCRkOb3UKV45ZpwcM4LiV27WhwC1QIUFMDF/
+#     c2SLftpif6mkGbsHgwx65A=X02d1
+# base_url: "http://fisheye.vagrant:80"
+# admin_pass: "administrator" #must be at least 8 chars
+
+##Jira
+license: |
+    AAABBQ0ODAoPeNp9UE1rg0AQve+vWOjZ4Gpsg7AH0T0Y/Ahqc8plaqbtlmQru6sk/74aC/3AdmBge
+    O/N483cNT3SLSjKfOpuQm8dBvc0rhvquSwgCZpWy87Kd8W3aRUdQioGOPUwISTWeBsSsMgnveMyh
+    63Jm9SwymSLyqA4ytu2KBpR7aq0FuTLgVvd4w95c+2wgDPyuMxzUcVplM08XjrUdoVLu9BaOeAMn
+    GafPWoziTySg1QWFagWxaWT+vot7YPDfFLqF1DSzKYH+k9FR+gsDNLYvxRznqI/P6Eunx/NmII7j
+    NSi4GM7WcB8dzN+6PPaNOFZmiwxy1F3vW5fweDvh38AcSeI+DAsAhRJhI3dyXyrgCc+/LF9LiEqV
+    WY+vwIUBIu7WdW2Tqt1OlEe8dAjn4F3vlk=X02dd
+base_url: "http://localhost"
+database_url: "localhost"
+database_name: "jira"
+database_user: "jirauser"
+database_pass: "jirapass"
+admin_full_name: "Admin admin"
+admin_email: "admin@admin.com"
+admin_user: "admin"
+admin_pass: "admin"
+mail_server_user: "admin"
+mail_server_pass: "admin"
+instance_name: "Jira"
+
+## Bamboo
+#
+# license: |
+#     AAABEg0ODAoPeNp9kMtugzAQRff+CktdEwHBRYnkRQpeIPGIgHaVjSHT1lIAyzYo+fvySFQVRfXIm
+#     7lzz7XnpewBp92AXYJtf7/192SHg6LEru14KARdKyGN6Fr6xpuq6zBrDSiphIbTHrOBX3o+ySjtm
+#     wpU9vmuQWnqEhQomJWQG6ATzXIcy31Fvx5qVA+omrkbXhsxwNK6iBpaDR8jaRpzUcLFGNvytgZ2l
+#     ULdHlBi2cQaw+6QeDGys5j5LC1ZfsyjgqFMffFW6CX3ZKbCq3M4c2n4IPRTFRUspeO1Ym/n+lvir
+#     TLLm4SUN0CDLElYHkSHGN2lKKRxFP7xPh7632fgKkGZDaz2dexV/c01rPf6AyY8kTYwLAIUMEoYg
+#     ydup9xJY5HbyBNe1BT/pQMCFFsTErYigi69WN1avoxVuXJybUA+X02dt
+# base_url: "http://localhost"
+# install_dir: "/opt/default-bamboo"
+# database_url: "jdbc:mysql://localhost/bamboo?autoReconnect=true"
+# database_user: "bamboo"
+# database_pass: "bamboopass"
+# admin_user: "administrator"
+# admin_pass: "administrator"
+# admin_full_name: "Admin admin"
+# admin_email: "admin@admin.com"
+# instance_name: "Bamboo"
+
+## Crowd
+# base_url: "http://localhost"
+# database_url: "jdbc:mysql://localhost/crowd?autoReconnect=true&characterEncoding=utf8&useUnicode=true"
+# database_user: "crowd"
+# database_pass: "crowdpass"
+# admin_email: "admin@admin.com"
+# admin_user: "admin"
+# admin_pass: "admin"
+# admin_first_name: "admin"
+# admin_last_name: "admin"
+# notification_mail: "admin@admin.com"
+# from_mail_address: "admin@admin.com"
+# mailserver_host: "localhost"
+# instance_name: "Crowd"
+# license: |
+#     AAAA/w0ODAoPeNptkM1uwjAQhO9+Cks9G8UOtBDJhyhJpUj5qVraE5etWcASmMh2Unj7kiat1Ahbv
+#     nyzOzveh2eradzuqVjRIIzCpygMaJKuqQj4nKTolNWN12cjE3v+2m4imnVwbKFHRPVohpcGrZ/hH
+#     5fetjiKoLzucCCJxR89BY+y92fBkonVWFlohcbh+tpgBSeUSV2W2WuSxwXJJtbHofQDreuZICVo4
+#     9GAUZhdGm2vvyMWLBBMLElt92C0Gzw2vr90cuItNB467e6q5C2r5O2xYr7g/JHzMXXVnj7R1rt3d
+#     wsjGSfjN/JUFnn6r2FU7gd8aa06gMPpbr4B/leCNzAsAhR1J4Q9IIC8PiACY6ugDeMIifVM0QIUE
+#     R8KiPXCmJqdaGdKFGVzZr9xOSw=X02d5
+
+## Confluence
+#
+# database_url: "jdbc:mysql://localhost/confluence?sessionVariables=storage_engine%3DInnoDB"
+# database_user: "confluence"
+# database_pass: "confluencepass"
+# admin_user: "confluence"
+# admin_full_name: "confluence confluence"
+# admin_email: "confluence@confluence.com"
+# admin_pass: "confluence"
+# license: |
+#     AAABCA0ODAoPeNptUMtqwzAQvOsrBD07yImdEIMOQfbB4Edp3J5yUZVNK3BkoYdJ/r523LQkWGJht
+#     TPD7Oil8YD3oHG4xiFJ4lUSxZilDV6SMEIpWGGkdrJTlHXq1HpQAg4Jznreej7OETNwa1LugI6qg
+#     GyDcIPEwF9w4WQP1BkP6F8zvW+EQgpQFpqrhoqfgbK6LLM3lu8K1E7QBxg7apao5FI5UHxYIbtoa
+#     a53yzggqz9LuGgwbgFzbpU/f4KpT6z11oGpuiNYSlBtvriSdmIf3Hjx09kduXa8l3YWRfusokMFR
+#     RRvyXoTod9ceUqLPH1AHhZ5t0M6GoR3/nyuV2/EN7fw/MU/O9SMyjAsAhRdS9k+XQXPqf/aROgZV
+#     XnPvJQ3SAIUL5Wn3MQgb7NBaQvk0tlovuR5Wkc=X02dh

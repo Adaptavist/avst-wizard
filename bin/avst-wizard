@@ -1,0 +1,249 @@
+# Copyright 2015 Adaptavist.com Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require 'avst-wizard'
+require 'hiera_loader'
+require 'docopt'
+require 'advanced_hash'
+require 'yaml'
+require 'colorize'
+require 'erb'
+
+avst_wizard_base="#{File.expand_path("../../", __FILE__)}"
+
+# This heredoc describes the options that the application will recognise and parse: https://github.com/docopt/docopt.rb
+doc = <<DOCOPT
+Adaptavist Wizard
+
+Usage:
+  avst-wizard [options]
+  avst-wizard -h | --help
+
+Options:
+  -h --help                                      Show this screen.
+  -n, --hostname HOST                            Hostname for the server
+  -p, --product_type PRODUCT_TYPE                Type of atlassian product (jira, confluence,...)
+  -b, --base_url BASE_URL                        Url where the product is accessible
+  -c, --hiera_config CONFIG                      Hiera config file
+  -f, --custom_config CUSTOM                     Contains key-values that will be available to hiera to configure stages [default: #{avst_wizard_base}/config/config.yaml]
+  -o, --ops                                      Shows params required to setup the atlassian app
+  -v, --version VERSION                          Version of atlassian app, if not specified, default config is picked
+DOCOPT
+
+start_time = Time.now
+
+begin
+  options = Docopt::docopt(doc)
+rescue Docopt::Exit => e
+  abort(e.message).red
+end
+
+hostname     = options["--hostname"]
+product_type = options["--product_type"]
+base_url     = options["--base_url"]
+hiera_config = options["--hiera_config"]
+custom_config = options["--custom_config"]
+ops          = options["--ops"]
+version      = options["--version"]
+
+unless product_type
+    abort("Please provide product_type options!!!").red
+end
+
+unless File.exists?(custom_config)
+    abort("ERROR: Please ensure the file #{custom_config} exists").red
+end
+# read config file with variables to config stages in hiera
+config = YAML.load_file(custom_config)
+
+scope = {
+    "::product_type" => product_type.to_s
+}
+
+if hostname
+    scope["::hostname"] = hostname.to_s
+end
+
+if version
+    scope["::version"] = version.to_s
+end
+
+# make custom_config configuration available to hiera
+scope = scope.merge(config)
+
+# create fully qualified hiera.yaml based on template, to be able to refer to config/hiera
+unless hiera_config
+    hiera_config = "#{avst_wizard_base}/hiera.yaml"
+    hiera_config_template = File.read("#{avst_wizard_base}/templates/hiera.yaml.erb")
+    File.open("#{hiera_config}", 'w') do |f|
+        f.write ERB.new(hiera_config_template).result(binding)
+    end
+end
+
+unless File.exists?(hiera_config)
+    abort("ERROR: Please ensure the file #{hiera_config} exists").red
+end
+
+conf = HieraLoader.new(scope, hiera_config)
+required_config = conf.get_config('required_config')
+
+if ops
+    puts "Required options for product #{product_type} are:".blue
+    res = []
+    required_config.keys.each do |k|
+        res << required_config[k].values
+    end
+    res.flatten.each do |r| 
+        puts "#{r}".blue
+    end
+    exit
+end
+
+# merge hiera hashes, default stage setup and custom config
+stages_config = AdvancedHash.new().merge(conf.get_config("stages"))
+user_data = conf.get_config("user_data", false)
+unless user_data
+    user_data = {}
+end
+user_data = AdvancedHash.new().merge(user_data)
+merged_data = stages_config.deep_merge(user_data)
+final_stages_config = AdvancedHash.new().merge(merged_data)
+
+unless final_stages_config
+    abort("ERROR: no stages config data found!!!").red
+end
+
+unless base_url
+    abort("Please provide base_url and product_type options!!!").red
+end
+begin
+    runner = AvstWizard::AvstWizard.new(base_url, required_config)
+
+
+    # wait for app to start  
+    # until get_stage returns recognized state or time out
+    number_of_retries = 60
+    # get current state and cookies, follow redirects
+    code = runner.get_stage_and_fetch_cookie
+    to_search_for = runner.get_current_url
+    puts "Searching for #{to_search_for}"
+    if to_search_for != "/" and final_stages_config[%r{#{to_search_for}}] != nil
+        not_recognized = false
+    else
+        not_recognized = true
+    end
+    counter=0
+    while not_recognized
+        if counter >= number_of_retries
+            abort "Waited too long for app to start and return a known stage, please review stages and check that the app is running correctly on #{base_url}".red
+        end
+        # wait 5 secs
+        sleep(5)
+        counter=counter+1
+        # try to get recognised state
+        code = runner.get_stage_and_fetch_cookie
+        to_search_for = runner.get_current_url
+        puts "Looping: Searching for #{to_search_for}"
+        if to_search_for != "/" and code.to_i == 200 and final_stages_config[%r{#{to_search_for}}] != nil
+            not_recognized = false
+        else
+            puts "Stage with url #{to_search_for} not recognized, retrying in 5 secs, attempt #{counter}/#{number_of_retries}, response code #{code}".yellow
+        end
+    end
+    
+    previous_url = ""
+    retries = 0
+    done = false
+    called = false
+    while !done and to_search_for != "/"
+        puts "Searching for config for #{to_search_for}".green
+        stage_config = final_stages_config[%r{#{to_search_for}}]
+        unless stage_config
+            abort("Stage #{to_search_for} not found! Plaese add it to default.yaml").red
+        end
+        previous_url = runner.get_current_url
+        if stage_config["complex"] && stage_config["complex"] == true
+            puts "Complex condition found, iterating over alternatives".yellow
+            # if stage is complex find the post based on substage condition
+            found = nil
+            stage_config['substages'].keys.each do |key|
+                puts "Searching for key: #{key}".yellow
+                if ( runner.values_present?(key, "#{base_url}#{to_search_for}") )
+                    puts "Found match for: #{key}.".yellow
+                    found = stage_config['substages'][key]
+                    break
+                end
+            end
+            if !found
+                abort("Substage with matching condition not found for page #{to_search_for}").red
+            end
+            # in case the setup require XSRF token, parse it and store to runner
+            if found['parse_atl_token']
+                atl = runner.parse_value('name="atl_token"', "value", "#{base_url}#{to_search_for}")
+                runner.atl_token = atl
+            end
+            # in case post is done via ajax and the state if not updated, make GET request until the url changes,  
+            if found['wait_for_next_state']
+                wait_for_next_state = found['wait_for_next_state'].to_i
+            else
+                wait_for_next_state = nil
+            end
+            url = "#{base_url}/#{found['post_url']}"
+            puts "Posting to #{url} with params: #{found['values']} and with retry: #{wait_for_next_state}".green
+            runner.post_form(found['values'], url, wait_for_next_state )
+        # in case no further url defined or stage marked as final, we are done 
+        elsif stage_config["post_url"] == nil || stage_config["post_url"] == "" || stage_config["final"] == true 
+            done = true
+            puts "No further stage specified. I am done here.".green
+        else
+            # in case post is done via ajax and the state if not updated, make GET request until the url changes,  
+            if stage_config['wait_for_next_state']
+                wait_for_next_state = stage_config['wait_for_next_state'].to_i
+            else
+                wait_for_next_state = nil
+            end
+            # handles simple stages, that requires POST on the form and will wait for redirect
+            url = "#{base_url}/#{stage_config['post_url']}"
+            if !called
+                puts "Posting to #{url} with params: #{stage_config['values']}".green
+                runner.post_form(stage_config['values'], url, wait_for_next_state)
+                called=true
+            end
+        end
+        # check post redirect, in case it is not redirected, try if wizard redirects or wait...
+        if (runner.get_current_url == previous_url || wait_for_next_state)
+            runner.get_stage_and_fetch_cookie(base_url)
+        end
+        to_search_for = runner.get_current_url
+        if to_search_for == previous_url
+            retries=retries+1
+            puts "Same url as in previous step. Increasing number of retries to #{retries}/20".yellow
+            sleep(10)
+            if retries > 20
+                abort "Too many retries for same url, please check #{url}, post the same params as in config in case there is an error as this version may differ from supported ones".red
+            end
+        else
+            retries=0
+            called=false
+        end
+    end
+# In case something went wrong on the way
+rescue Exception => e
+    message = e.message.force_encoding("utf-8")
+    abort(e.message.red)
+end
+
+time_taken = ((Time.now - start_time) / 60).round(2)
+puts "Finished in #{time_taken} minutes".green
+

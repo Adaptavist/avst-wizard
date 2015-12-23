@@ -1,0 +1,21 @@
+---
+
+# avst-wizard --hostname test --product_type fecru --base_url http://fisheye.vagrant
+
+user_data:
+    '/setup/CrucibleLicense-view.do':
+        values:
+            CrucibleLicense: |
+                AAAA+w0ODAoPeNp9UE1PwzAMvedXROLcqSl0sEo5TG2RivqB2OC0ixcMROpC5STV9u9Z6cTGNLBky
+                R/Pz8++uifNH8BwMeXhdRLHiYh4uljyKBQxy9Aq0p3Tn0am5JVet7hKeN5D62GospTwO8jAoRxmg
+                lAEYsrUAT0ptUJjcbnrsIYNyrSpqvwpLeblEYPbDslN8IdWOvLI8rO8HalekOxQi1gF2jg0YBTm2
+                07T7kTF7S8Vtd+skZq3Z7sfloFgDb2D0XZkX/F/bP4KnYNeW/cX4rgGlNM9jmoXeS33HpSxuLmbi
+                Rk7fKLIZFlklzqXb3j0pD7A4vmHvwCjv4bxMC0CFQCRkOb3UKV45ZpwcM4LiV27WhwC1QIUFMDF/
+                c2SLftpif6mkGbsHgwx65A=X02d1
+    '/setup/jiraConnect.do':
+        values:
+            next: "skip"
+    '/setup/password.do':
+        values:
+            password1: "administrator"
+            password2: "administrator"

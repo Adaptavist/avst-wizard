@@ -1,0 +1,58 @@
+---
+
+required_config:
+    license: "license"
+    baseUrl: "base_url" # "http://localhost"
+    hostname: "database_url" #"localhost"
+    database: "database_name"
+    username: "database_user"
+    password: "database_pass"
+    username: "admin_user"
+    fullname: "admin_full_name"
+    email: "admin_email"
+    password: "admin_pass"
+    confirmPassword: "admin_pass"
+    applicationTitle: "instance_name"
+
+stages:
+    '/setup':
+        complex: true
+        substages:
+            'id="database"':
+                parse_atl_token: true
+                post_url: 'setup'
+                values:
+                    step: "database"
+                    internal: "false"
+                    type: "mysql"
+                    hostname: "%{database_url}"
+                    port: "3306"
+                    database: "%{database_name}"
+                    username: "%{database_user}"
+                    password: "%{database_pass}"
+                    submit: "Next"
+            'id="license"':
+                parse_atl_token: true
+                post_url: 'setup'
+                values:
+                    step: "settings"
+                    applicationTitle: "%{instance_name}"
+                    baseUrl: "%{base_url}"
+                    license: "%{license}"
+                    submit: "Next"
+            'id="skipJira"':
+                wait_for_next_state: 10
+                parse_atl_token: true
+                post_url: 'setup'
+                values:
+                    step: "user"
+                    username: "%{admin_user}"
+                    fullname: "%{admin_full_name}"
+                    email: "%{admin_email}"
+                    password: "%{admin_pass}"
+                    confirmPassword: "%{admin_pass}"
+                    skipJira: "Go+to+Stash"
+    '/login':
+        final: true
+    '/projects':
+        final: true

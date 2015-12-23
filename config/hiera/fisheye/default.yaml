@@ -1,0 +1,38 @@
+---
+
+required_config:
+    '/setup/CrucibleLicense-view.do':
+        CrucibleLicense: "license"
+    '/setup/jiraConnect.do':
+        fishEyeUrl: "base_url"
+    '/setup/password.do':
+        password1: "admin_pass"
+
+stages:
+    '/setup/CrucibleLicense-view.do':
+        post_url: 'setup/saveCrucibleLicense.do'
+        values:
+            CrucibleLicense: "%{license}"
+    '/setup/includeFishEye-default.do':
+        post_url: 'setup/includeFishEye.do'
+        values:
+            includeFishEye: "true"
+    '/setup/jiraConnect.do':
+        post_url: 'setup/jiraConnect.do'
+        values:
+            next: "skip"
+            jiraUrl: ""
+            jiraAdminUser: ""
+            jiraAdminPassword: ""
+            fishEyeUrl: "%{base_url}"
+            groups: "jira-users"
+            adminGroups: "jira-administrators"
+    '/setup/password.do':
+        post_url: 'setup/savePassword.do'
+        values:
+            password1: "%{admin_pass}"
+            password2: "%{admin_pass}"
+    '/setup/finished.do':
+        final: true
+    '/login':
+        final: true

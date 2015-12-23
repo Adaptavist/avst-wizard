@@ -1,0 +1,103 @@
+---
+
+required_config:
+    '/secure/SetupLicense!default.jspa':
+        setupLicenseKey: "license"
+    '/secure/SetupApplicationProperties!default.jspa':
+        baseURL: "base_url" # "http://localhost"
+        title: "instance_name"
+    '/secure/SetupDatabase!default.jspa':
+        jdbcHostname: "database_url" #"localhost"
+        jdbcDatabase: "database_name"
+        jdbcUsername: "database_user"
+        jdbcPassword: "database_pass"
+    '/secure/SetupAdminAccount!default.jspa':
+        fullname: "admin_full_name"
+        email: "admin_email"
+        username: "admin_user"
+        password: "admin_pass"
+        confirm: "admin_pass"
+
+optional_config:
+    analytics-enabled: "mail_analytics_enabled"
+    from: "mail_notification_from"
+    serverName: "mail_server_name"
+    port: "mail_server_port"
+    username: "mail_server_user"
+    password: "mail_server_pass"
+
+stages:
+    '/secure/SetupMode!default.jspa':
+        post_url: 'secure/SetupMode.jspa'
+        values:
+            setupOption: "classic"
+    '/secure/SetupDatabase!default.jspa':
+        post_url: 'secure/SetupDatabase.jspa'
+        values:
+            databaseOption: "external"
+            databaseType: "mysql"
+            jdbcHostname: "%{database_url}" #"localhost"
+            jdbcPort: "3306"
+            jdbcDatabase: "%{database_name}"
+            jdbcSid: ""
+            jdbcUsername: "%{database_user}"
+            jdbcPassword: "%{database_pass}"
+            schemaName: ""
+            testingConnection: "false"
+    '/secure/SetupApplicationProperties!default.jspa':
+        post_url: 'secure/SetupApplicationProperties.jspa'
+        values:
+            title: "%{instance_name}"
+            mode: "private"
+            baseURL: "%{base_url}"
+            nextStep: "true"
+    '/secure/SetupProductBundle!default.jspa':
+        post_url: 'secure/SetupProductBundle.jspa'
+        values:
+            selectedBundle: "TRACKING" # Choices: TRACKING, DEVELOPMENT, SERVICEDESK
+    '/secure/SetupLicense!default.jspa':
+        post_url: 'secure/SetupLicense.jspa'
+        values:
+            setupLicenseKey: "%{license}"
+            setupFirstName: ""
+            setupLastName: ""
+            setupEmail: ""
+            setupPluginLicenseKey: ""
+    '/secure/SetupAdminAccount!default.jspa':
+        complex: true
+        substages:
+            'action="SetupAdminAccount.jspa"':
+                post_url: 'secure/SetupAdminAccount.jspa'
+                values:
+                    fullname: "%{admin_full_name}"
+                    email: "%{admin_email}"
+                    username: "%{admin_user}"
+                    password: "%{admin_pass}"
+                    confirm: "%{admin_pass}"
+            'action="SetupMailNotifications.jspa"':
+                post_url: 'secure/SetupMailNotifications.jspa'
+                values:
+                    analytics-enabled: "%{mail_analytics_enabled}"
+                    noemail: "true"
+                    name: "Default+SMTP+Server"
+                    from: "%{mail_notification_from}"
+                    prefix: "[JIRA]"
+                    mailservertype: "smtp"
+                    serviceProvider: "custom"
+                    serverName: "%{mail_server_name}"
+                    protocol: "smtp"
+                    port: "%{mail_server_port}"
+                    timeout: "10000"
+                    username: "%{mail_server_user}"
+                    password: "%{mail_server_pass}"
+                    jndiLocation: ""
+                    type: "smtp"
+                    testingMailConnection: "false"
+    '/secure/SetupProductBundleReport!default.jspa':
+        post_url: 'secure/SetupProductBundleReport.jspa'
+    '/secure/Dashboard.jspa?src=SetupComplete':
+        final: true
+    '/secure/WelcomeToJIRA.jspa':
+        final: true
+    '/secure/WelcomeToJIRASoftware.jspa':
+        final: true

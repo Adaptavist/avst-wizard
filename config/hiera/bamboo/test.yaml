@@ -1,0 +1,15 @@
+---
+
+# avst-wizard --hostname test --product_type bamboo --base_url http://bamboo.vagrant
+
+user_data:
+    '/setup/setupLicense.action':
+        values:
+            licenseString: |
+                AAABEg0ODAoPeNp9kMtugzAQRff+CktdEwHBRYnkRQpeIPGIgHaVjSHT1lIAyzYo+fvySFQVRfXIm
+                7lzz7XnpewBp92AXYJtf7/192SHg6LEru14KARdKyGN6Fr6xpuq6zBrDSiphIbTHrOBX3o+ySjtm
+                wpU9vmuQWnqEhQomJWQG6ATzXIcy31Fvx5qVA+omrkbXhsxwNK6iBpaDR8jaRpzUcLFGNvytgZ2l
+                ULdHlBi2cQaw+6QeDGys5j5LC1ZfsyjgqFMffFW6CX3ZKbCq3M4c2n4IPRTFRUspeO1Ym/n+lvir
+                TLLm4SUN0CDLElYHkSHGN2lKKRxFP7xPh7632fgKkGZDaz2dexV/c01rPf6AyY8kTYwLAIUMEoYg
+                ydup9xJY5HbyBNe1BT/pQMCFFsTErYigi69WN1avoxVuXJybUA+X02dt
+            sid: "BKQA-6HQR-2APB-SXIT"

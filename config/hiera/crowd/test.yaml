@@ -1,0 +1,43 @@
+---
+
+# avst-wizard --hostname test --product_type crowd --base_url http://crowd.vagrant
+
+user_data:
+    '/console/setup/setuplicense.action':
+        values:
+            key: |
+                AAAA/w0ODAoPeNptkM1uwjAQhO9+Cks9G8UOtBDJhyhJpUj5qVraE5etWcASmMh2Unj7kiat1Ahbv
+                nyzOzveh2eradzuqVjRIIzCpygMaJKuqQj4nKTolNWN12cjE3v+2m4imnVwbKFHRPVohpcGrZ/hH
+                5fetjiKoLzucCCJxR89BY+y92fBkonVWFlohcbh+tpgBSeUSV2W2WuSxwXJJtbHofQDreuZICVo4
+                9GAUZhdGm2vvyMWLBBMLElt92C0Gzw2vr90cuItNB467e6q5C2r5O2xYr7g/JHzMXXVnj7R1rt3d
+                wsjGSfjN/JUFnn6r2FU7gd8aa06gMPpbr4B/leCNzAsAhR1J4Q9IIC8PiACY6ugDeMIifVM0QIUE
+                R8KiPXCmJqdaGdKFGVzZr9xOSw=X02d5
+    '/console/setup/setupdatabase.action':
+        values:
+            jdbcUrl: "jdbc:mysql://localhost/crowd?autoReconnect=true&characterEncoding=utf8&useUnicode=true"
+            jdbcUsername: "crowd"
+            jdbcPassword: "crowdpass"
+    '/console/setup/setupoptions.action':
+        values:
+            title: "Crowd+server"
+            baseURL: "http://crowd.vagrant"
+    '/console/setup/directoryinternalsetup.action':
+        post_url: 'console/setup/directoryinternalsetup!update.action'
+        values:
+            name: "Crowd+server"
+            description: "My+crowd+server"
+            passwordRegex: ""
+            passwordComplexityMessage: ""
+            passwordMaxAttempts: "0"
+            passwordMaxChangeTime: "0"
+            passwordHistoryCount: "0"
+            userEncryptionMethod: "atlassian-security"
+    '/console/setup/defaultadministrator.action':
+        post_url: 'console/setup/defaultadministrator!update.action'
+        values:
+            email: "admin@admin.com"
+            name: "admin"
+            password: "admin"
+            passwordConfirm: "admin"
+            firstname: "admin"
+            lastname: "admin"

@@ -1,0 +1,31 @@
+---
+
+# avst-wizard --hostname test --product_type stash --base_url http://stash.vagrant
+
+user_data:
+    '/setup':
+        substages:
+            'id="database"':
+                values:
+                    hostname: "localhost"
+                    database: "stash"
+                    username: "stash"
+                    password: "stashpass"
+            'id="license"':
+                values:
+                    applicationTitle: "Stash"
+                    baseUrl: "http://stash.vagrant"
+                    license: |
+                        AAABCw0ODAoPeNp9kEFrgzAUx+/5FIGdLbGtuAo5FPXgsDpmux3WHd7StzagmSRR6refVmFjuAVye
+                        e+X33v5373giT6AosynzAvYKlivaFjs6ZK5HonQCC1rKz8VLyyYCz2oUlbS9o8OBrWhrymeQXRvx
+                        4DGLZQNDCxNpUBlkIQab4UILPLB6DDXYT75RrnVDRIzuBcgrGxxrJSj4bmfMVBLsgOpLCpQAuNrL
+                        XX3w+kPzlyfQUkzWo/0n7M9QW2hlcb+RUwLTd/YdzVmUCEP890ufgqTbUqKOOP9dVKPbTZrdk8mN
+                        ol4mkRznfmtx0F4rVHbBc7GkjXVO+r84xY4d1zy2GhxAYO/U/0Ch8yNOjAtAhQjwkVGno3zAyL99
+                        Fyg2ejlO9WwEQIVAIOx98UhQPj03J+qRv2/757ZyiwpX02dl
+            'id="skipJira"':
+                values:
+                    username: "admin"
+                    fullname: "admin"
+                    email: "admin@admin.com"
+                    password: "admin"
+                    confirmPassword: "admin"

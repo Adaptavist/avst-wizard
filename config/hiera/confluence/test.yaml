@@ -1,0 +1,26 @@
+---
+
+# avst-wizard --hostname test --product_type confluence --base_url http://wiki.vagrant
+
+user_data:
+    '/setup/setuplicense.action':
+        values:
+            licenseString: |
+                AAABCA0ODAoPeNptUMtqwzAQvOsrBD07yImdEIMOQfbB4Edp3J5yUZVNK3BkoYdJ/r523LQkWGJht
+                TPD7Oil8YD3oHG4xiFJ4lUSxZilDV6SMEIpWGGkdrJTlHXq1HpQAg4Jznreej7OETNwa1LugI6qg
+                GyDcIPEwF9w4WQP1BkP6F8zvW+EQgpQFpqrhoqfgbK6LLM3lu8K1E7QBxg7apao5FI5UHxYIbtoa
+                a53yzggqz9LuGgwbgFzbpU/f4KpT6z11oGpuiNYSlBtvriSdmIf3Hjx09kduXa8l3YWRfusokMFR
+                RRvyXoTod9ceUqLPH1AHhZ5t0M6GoR3/nyuV2/EN7fw/MU/O9SMyjAsAhRdS9k+XQXPqf/aROgZV
+                XnPvJQ3SAIUL5Wn3MQgb7NBaQvk0tlovuR5Wkc=X02dh
+    '/setup/setupdbchoice-start.action':
+        values:
+            dbConfigInfo.password: "confluencepass"
+    '/setup/setupadministrator-start.action':
+        post_url: 'setup/setupadministrator.action'
+        values:
+            username: "martin"
+            fullName: "martin"
+            email: "martin@martin.com"
+            password: "martin"
+            confirm: "martin"
+            edit: "Next"
