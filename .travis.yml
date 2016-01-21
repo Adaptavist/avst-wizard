@@ -1,0 +1,18 @@
+language: ruby
+notifications:
+  email: false
+  hipchat:
+    rooms:
+      secure: ihp1kldchHoVGm3egGVI/zysPtxCxXgpyb5UOI1fTQxwsYMhmQSoJ5HtnS1v6CFC2wcObGoSIwuGkUJYbdZiMPUMJa6Qu1prExgDcH4YeK2l0arUe4mHPVvl3hHjm0/xVQvSAgwBsw9lQ/ANrcliDEHej94vC00vp+zuEkW2UmjPlmtsu6+AVpyZR3zxedYX4fY/ZFlinDajpkn4N/wI5EYysostT0cYZbl6A2UJg1PAS1H2+UHwLJ6Muu9q6Z9I6fxa3dXrkaO9rE8cvKDhwKfn9gnxbA8lRylHqOY8Nty5F2tnSVbo5vs3RGIaHgGWZNj7ckp+jrEzSZfyEw8bialDjayDVKnNyLVN8/Zd4CbChHe2/I7ylUSEWxDz8G8nohZxJG59ERdmZ8wRI5VittanjkdOTH+Cq/fooK/fIu/zPm31iwhhydBkFzuKbrlQVIobptyYYnoX5JVU8Jte9A9biIuXiCeSFltZk650Vu9mTZBTAEshC5srHMrVtPhDgXxB3DG8+EjRnugmBt0RHeXW88j/LjRkruWOyr0Xv3VgXgLcZBUVKtpSNRno58HbOkIcG8ZPMKGPgOQhbBUFfRMzpRAdnGpGmm5Xq23uBd50VLq+qKp/DM2M37l8dC49Mm4sDvsTjqx3sK5mDbyGtFxx0pWhzHWD3UM0edR9t8g=
+    template:
+    - 'Gem - %{repository} #%{build_number} (%{build_url}) by %{author}: %{message}'
+rvm:
+- 2.0.0
+deploy:
+  provider: rubygems
+  api_key:
+    secure: PV1wcd2GAIw4MnhmfUddHGkZnjfryWaZVdEBHJJ8QP8+GyVCh9Sphd+719ACCvjIuijNskdVoxJOc4LC7UVlZEee28Ixun8Gsn6vb+0Pj9J1RpluDBBM9R7IsUnfaQRJmkPSgEfJ8sPZ9oqYbuBn4PUgDz1iA64rEyBoypu0F9q//q5fZ/DkzNtlvfXUHsClePcYvJZnCwjy2BmRnOMC89qn/8AVD6RyN9ZiCVGFyo1LZYSwfmGUiRrDOHBsqj0R+gdPBh7KRjC4znNR+Iw3URmaInUmwL+cek5GRMm7a9Ld9aS5kD/Q6mCQKZpSjMtyh9XMr3lj4DjU7CVJQgiMWYD1GD1ywOXlH08JummwGuEvAlJh5g9pyqCShOQtGXFZZMqVsjTMbddUKIaCmuCMCS0ktDUdaZPD4mmQz+BH7vwqLJhhpFPf4cMOGNdkgPE2NFfTer2ogrKI/lN7OzCNBPKouykjLgRyco1CpfUcvIjnkGjx8/ceiHoXQsRO/JbQqqprbNgTkHlG/CODpHoxaN//7IopGiZRjmMQX+KgLJuiTl974KPeStzjFlhM7Jx82fdJo1FlnQoJSuzAwm0fVFbsoNFcPD3iLV2hxLiAxMIPqk2kP/OPqOXwGwusTw9+kC27daA1LV4eqs+ToHzh1KOHgAO2yWhxucTk8ZdyEGU=
+  gem: avst-wizard
+  on:
+    tags: true
+    repo: Adaptavist/avst-wizard
