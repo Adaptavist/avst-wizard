@@ -35,14 +35,14 @@ stages:
         post_url: 'secure/SetupDatabase.jspa'
         values:
             databaseOption: "EXTERNAL"
-            databaseType: "mysql"
+            databaseType: "%{database_type}" #"mysql/postgres72"
             jdbcHostname: "%{database_url}" #"localhost"
-            jdbcPort: "3306"
+            jdbcPort: "%{database_port}" #"3306/5432"
             jdbcDatabase: "%{database_name}"
             jdbcSid: ""
             jdbcUsername: "%{database_user}"
             jdbcPassword: "%{database_pass}"
-            schemaName: ""
+            schemaName: "%{database_schema_name}" #""/public
             testingConnection: "false"
             language: ""
             changingLanguage: "false"

@@ -50,7 +50,7 @@ module AvstWizard
             if response['set-cookie']
                 @cookie = response['set-cookie'].split('; ')[0]
                 response['set-cookie'].split(';').each do |part|
-                    if part.include? "atl.xsrf.token"
+                    if (part.include? "atl.xsrf.token" && part.match(/atl.xsrf.token=(.*)/))
                         # parse only the token
                         @atl_token = part.match(/atl.xsrf.token=(.*)/).captures[0]
                         break

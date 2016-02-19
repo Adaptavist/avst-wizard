@@ -64,6 +64,12 @@ end
 unless File.exists?(custom_config)
     abort("ERROR: Please ensure the file #{custom_config} exists").red
 end
+
+run_file="#{File.dirname(custom_config)}/.wizard_done.lock"
+if File.exists?(run_file)
+    exit
+end
+
 # read config file with variables to config stages in hiera
 config = YAML.load_file(custom_config)
 
@@ -238,6 +244,7 @@ begin
             called=false
         end
     end
+    File.open(run_file, 'w') {|f| f.write "Wizard run. Delete this file if you want to rerun it." }
 # In case something went wrong on the way
 rescue Exception => e
     message = e.message.force_encoding("utf-8")
