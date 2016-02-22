@@ -40,12 +40,12 @@ stages:
         post_url: 'console/setup/setupdatabase!update.action'
         values:
             databaseOption: "db.jdbc"
-            jdbcDatabaseType: "mysql"
-            jdbcDriverClassName: "com.mysql.jdbc.Driver"
+            jdbcDatabaseType: "%{database_type}"
+            jdbcDriverClassName: "%{database_driver_class}"
             jdbcUrl: "%{database_url}"
             jdbcUsername: "%{database_user}"
             jdbcPassword: "%{database_pass}"
-            jdbcHibernateDialect: "org.hibernate.dialect.MySQL5InnoDBDialect"
+            jdbcHibernateDialect: "%{database_hibernate_dialect}"
             jdbcOverwriteData: "false"
             datasourceDatabaseType: ""
             datasourceJndiName: ""

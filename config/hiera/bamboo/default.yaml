@@ -4,7 +4,7 @@ required_config:
     '/setup/setupLicense.action':
         licenseString: "license"
     '/setup/setupGeneralConfiguration.action':
-        baseUrl: "base_url" # "http://bamboo.vagrant"
+        baseUrl: "base_url" # "http://vcmlprodwiki.vagrant"
         installDir: "install_dir" #/opt/bamboo
         instanceName: "instance_name"
     '/setup/setupDatabase.action':
@@ -40,10 +40,10 @@ stages:
         wait_for_next_state: 20
         post_url: 'setup/performSetupDatabaseConnection.action'
         values:
-            selectedDatabase: "mysql"
+            selectedDatabase: "%{database_type}"
             connectionChoice: "jdbcConnection"
             datasourceName: ""
-            dbConfigInfo.driverClassName: "com.mysql.jdbc.Driver"
+            dbConfigInfo.driverClassName: "%{database_driver_class}"
             dbConfigInfo.databaseUrl: "%{database_url}"
             dbConfigInfo.userName: "%{database_user}"
             dbConfigInfo.password: "%{database_pass}"

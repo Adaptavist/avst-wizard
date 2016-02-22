@@ -24,9 +24,9 @@ stages:
                 values:
                     step: "database"
                     internal: "false"
-                    type: "mysql"
+                    type: "%{database_type}"
                     hostname: "%{database_url}"
-                    port: "3306"
+                    port: "%{database_port}"
                     database: "%{database_name}"
                     username: "%{database_user}"
                     password: "%{database_pass}"
