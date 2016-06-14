@@ -24,12 +24,13 @@ module AvstWizard
 
         attr_writer :atl_token
 
-        def initialize(url, required_config = {})
+        def initialize(url, required_config = {}, url_required_part=nil))
             @url = url
             @cookie = ""
             @current_url = ""
             @atl_token = ""
             @required_config = required_config
+            @url_required_part = url_required_part
         end
 
         # Does GET requests to url, follows redirects, stores cookies and xsrf.token if present
@@ -50,7 +51,7 @@ module AvstWizard
             if response['set-cookie']
                 @cookie = response['set-cookie'].split('; ')[0]
                 response['set-cookie'].split(';').each do |part|
-                    if ((part.include? "atl.xsrf.token") and (part.match(/atl.xsrf.token=(.*)/)))
+                    if ((part and part.include? "atl.xsrf.token") and (part.match(/atl.xsrf.token=(.*)/)))
                         # parse only the token
                         @atl_token = part.match(/atl.xsrf.token=(.*)/).captures[0]
                         break
@@ -59,14 +60,15 @@ module AvstWizard
                 puts "Found new cookie #{get_cookie}".yellow
             end
             if response['location']
-                puts "Redirected to: #{response['location']}".yellow
+                redirection_url = compose_redirection_url(response['location'])
+                puts "Redirected to: #{redirection_url}".yellow
             else
                 @current_url = url.request_uri
                 puts "Ended in: #{@current_url}".yellow
             end
             case response
             when Net::HTTPSuccess     then response.code.to_i
-            when Net::HTTPRedirection then get_stage_and_fetch_cookie(response['location'], limit - 1)
+            when Net::HTTPRedirection then get_stage_and_fetch_cookie(redirection_url, limit - 1)
             else
                 puts response.body
                 puts response.code.to_s
@@ -74,6 +76,23 @@ module AvstWizard
             end
         end
 
+        def compose_redirection_url(location)
+            # in case response['location'] is not full url we need to compose it
+            # if it does contain base_url we assume it is ok
+            if location.include? @url
+                location
+            else
+                # in Jira 7.1.7 location is databaseSetup.jspa not secure/databaseSetup.jspa
+                if @url_required_part and !location.include? "/#{@url_required_part}/"
+                    "#{@url}/#{@url_required_part}/#{location}"
+                else
+                    # if required url part is present prepend url
+                    # TODO: better check with regexp
+                    "#{@url}#{location}"
+                end
+            end 
+        end
+        
         # add atl_token to cookie in case it is present
         def get_cookie
             resp = @cookie
@@ -165,8 +184,9 @@ module AvstWizard
                 puts "Current : #{@url}#{@current_url}".yellow
                 # puts "BODY: #{response.body}"
                 redirected = true
-                if response['location'] and response['location'] != "#{@url}#{@current_url}"
-                    @current_url = URI.parse(response['location'].to_s).request_uri
+                if response['location'] and !"#{@url}/#{@current_url}".include? response['location']
+                    redirection_url = compose_redirection_url(response['location'])
+                    @current_url = URI.parse(redirection_url).request_uri
                 else
                     puts "Was not redirected, staying on page...".yellow
                     redirected = false

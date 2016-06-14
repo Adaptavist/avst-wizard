@@ -134,7 +134,8 @@ unless base_url
     abort("Please provide base_url and product_type options!!!").red
 end
 begin
-    runner = AvstWizard::AvstWizard.new(base_url, required_config)
+    url_required_part = conf.get_config("url_required_part", false)
+    runner = AvstWizard::AvstWizard.new(base_url, required_config, url_required_part)
 
 
     # wait for app to start  
