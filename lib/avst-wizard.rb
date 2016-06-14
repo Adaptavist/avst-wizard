@@ -24,7 +24,7 @@ module AvstWizard
 
         attr_writer :atl_token
 
-        def initialize(url, required_config = {}, url_required_part=nil))
+        def initialize(url, required_config = {}, url_required_part=nil)
             @url = url
             @cookie = ""
             @current_url = ""
@@ -92,7 +92,7 @@ module AvstWizard
                 end
             end 
         end
-        
+
         # add atl_token to cookie in case it is present
         def get_cookie
             resp = @cookie
