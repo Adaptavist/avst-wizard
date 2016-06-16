@@ -1,7 +1,5 @@
 ---
 
-# tested on Jira 7.1.7
-
 required_config:
     '/secure/SetupLicense!default.jspa':
         setupLicenseKey: "license"
@@ -19,8 +17,6 @@ required_config:
         username: "admin_user"
         password: "admin_pass"
         confirm: "admin_pass"
-
-url_required_part: 'secure'
 
 optional_config:
     analytics-enabled: "mail_analytics_enabled"
