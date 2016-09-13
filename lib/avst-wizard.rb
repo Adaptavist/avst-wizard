@@ -35,11 +35,11 @@ module AvstWizard
         end
 
         # Does GET requests to url, follows redirects, stores cookies and xsrf.token if present
-        def get_stage_and_fetch_cookie(url = @url , limit = 10)
+        def get_stage_and_fetch_cookie(request_url = @url , limit = 10)
             # You should choose better exception.
             raise ArgumentError, 'HTTP redirect too deep' if limit <= 0
-            puts "Trying to GET #{url}".yellow
-            url = URI.parse(url)        
+            puts "Trying to GET #{request_url}".yellow
+            url = URI.parse(request_url)
             req = Net::HTTP::Get.new(url.request_uri)
             if @cookie != ""
                 req['Cookie'] = get_cookie
@@ -51,32 +51,38 @@ module AvstWizard
             if url.instance_of? URI::HTTPS
                 use_ssl = true
             end
-            response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
-            if response['set-cookie']
-                @cookie = response['set-cookie'].split('; ')[0]
-                response['set-cookie'].split(';').each do |part|
-                    if ((part and part.include? "atl.xsrf.token") and (part.match(/atl.xsrf.token=(.*)/)))
-                        # parse only the token
-                        @atl_token = part.match(/atl.xsrf.token=(.*)/).captures[0]
-                        break
+            begin
+                response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
+                if response['set-cookie']
+                    @cookie = response['set-cookie'].split('; ')[0]
+                    response['set-cookie'].split(';').each do |part|
+                        if ((part and part.include? "atl.xsrf.token") and (part.match(/atl.xsrf.token=(.*)/)))
+                            # parse only the token
+                            @atl_token = part.match(/atl.xsrf.token=(.*)/).captures[0]
+                            break
+                        end
                     end
+                    puts "Found new cookie #{get_cookie}".yellow
                 end
-                puts "Found new cookie #{get_cookie}".yellow
-            end
-            if response['location']
-                redirection_url = compose_redirection_url(response['location'])
-                puts "Redirected to: #{redirection_url}".yellow
-            else
-                @current_url = url.request_uri
-                puts "Ended in: #{@current_url}".yellow
-            end
-            case response
-            when Net::HTTPSuccess     then response.code.to_i
-            when Net::HTTPRedirection then get_stage_and_fetch_cookie(redirection_url, limit - 1)
-            else
-                puts response.body
-                puts response.code.to_s
-                response.code.to_i
+                if response['location']
+                    redirection_url = compose_redirection_url(response['location'])
+                    puts "Redirected to: #{redirection_url}".yellow
+                else
+                    @current_url = url.request_uri
+                    puts "Ended in: #{@current_url}".yellow
+                end
+                case response
+                when Net::HTTPSuccess     then response.code.to_i
+                when Net::HTTPRedirection then get_stage_and_fetch_cookie(redirection_url, limit - 1)
+                else
+                    puts response.body
+                    puts response.code.to_s
+                    response.code.to_i
+                end
+            rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError, Errno::ECONNREFUSED,
+                    Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+                @current_url = request_url
+                404
             end
         end
 
