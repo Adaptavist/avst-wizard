@@ -26,6 +26,7 @@ avst-wizard --hostname hostname --product_type product_type --base_url url --hie
 - hiera_config   - custom hiera.yaml file, defaults to hiera.yaml in project root
 - custom_config  - file with required params setup, defaults to config/config.yaml
 - ops            - Prints out required parameters to set for specified product
+-p, --use_tomcat_port PORT  - Use tomcat port to connect to the application
 
 ## Default usage and configuration
 

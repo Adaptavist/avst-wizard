@@ -37,6 +37,7 @@ Options:
   -b, --base_url BASE_URL                        Url where the product is accessible
   -c, --hiera_config CONFIG                      Hiera config file
   -f, --custom_config CUSTOM                     Contains key-values that will be available to hiera to configure stages [default: #{avst_wizard_base}/config/config.yaml]
+  -p, --use_tomcat_port PORT                     Use tomcat port to connect to the application
   -o, --ops                                      Shows params required to setup the atlassian app
   -v, --version VERSION                          Version of atlassian app, if not specified, default config is picked
 DOCOPT
@@ -52,6 +53,8 @@ end
 hostname     = options["--hostname"]
 product_type = options["--product_type"]
 base_url     = options["--base_url"]
+use_tomcat_port = options["--use_tomcat_port"]
+
 hiera_config = options["--hiera_config"]
 custom_config = options["--custom_config"]
 ops          = options["--ops"]
@@ -135,7 +138,15 @@ unless base_url
 end
 begin
     url_required_part = conf.get_config("url_required_part", false)
-    runner = AvstWizard::AvstWizard.new(base_url, required_config, url_required_part)
+    if use_tomcat_port 
+        host_url = base_url
+        base_url = "http://localhost:#{use_tomcat_port}"
+        puts "Using direct tomcat connection to #{base_url}"
+    else
+        host_url = nil
+        puts "Going via #{base_url}"
+    end
+    runner = AvstWizard::AvstWizard.new(base_url, required_config, url_required_part, host_url)
 
 
     # wait for app to start  
@@ -249,6 +260,7 @@ begin
 # In case something went wrong on the way
 rescue Exception => e
     message = e.message.force_encoding("utf-8")
+    puts e.backtrace.inspect
     abort(e.message.red)
 end
 
