@@ -151,13 +151,25 @@ module AvstWizard
             if @host_url 
                 req.add_field("Host", @host_url)
             end
-            response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
-            # TODO: is it possible that this might be a redirect? Can Net::HTTP follow redirects automatically?
+            
+            counter = 0
+            response = nil
+            while (response == nil and counter < 20)
+                begin
+                    response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
+                rescue Exception => e
+                    # in case we have to wait for response so it wont timeout
+                    puts "Exception thrown while trying to parse value: #{e.inspect} \n counter #{counter}/20".yellow
+                    counter+=1
+                end
+            end
             if response.code.to_i != 200
                 puts response.inspect.red
                 puts response.body.inspect.red
                 raise "There is a problem performing a GET on #{url}"
             end
+            
+
             nok = Nokogiri::HTML.parse(response.body)
             res = nok.css("[#{element_identifier}]")
             if res.any?
