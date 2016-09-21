@@ -159,6 +159,7 @@ module AvstWizard
                     response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
                 rescue Exception => e
                     # in case we have to wait for response so it wont timeout
+                    sleep(5)
                     puts "Exception thrown while trying to parse value: #{e.inspect} \n counter #{counter}/20".yellow
                     counter+=1
                 end
