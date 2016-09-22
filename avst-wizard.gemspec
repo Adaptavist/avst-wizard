@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "avst-wizard"
-  spec.version       = '0.0.27'
+  spec.version       = '0.0.28'
   spec.authors       = ["Martin Brehovsky"]
   spec.email         = ["mbrehovsky@adaptavist.com"]
   spec.summary       = %q{Avstwizard}

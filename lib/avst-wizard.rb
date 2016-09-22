@@ -154,15 +154,22 @@ module AvstWizard
             
             counter = 0
             response = nil
-            while (response == nil and counter < 20)
+            while counter < 20
                 begin
                     response = Net::HTTP.start(url.host, url.port, use_ssl: use_ssl, verify_mode: OpenSSL::SSL::VERIFY_NONE) { |http| http.request(req) }
                 rescue Exception => e
-                    # in case we have to wait for response so it wont timeout
-                    sleep(5)
                     puts "Exception thrown while trying to parse value: #{e.inspect} \n counter #{counter}/20".yellow
+                    response = nil
+                end
+                if response and response.code.to_i == 200
+                    break
+                else
+                    # in case we have to wait for response
+                    sleep(5)
+                    puts "Sleeping for 5 secs to wait for server to respond. See previous error. Response was #{response.inspect}".yellow
                     counter+=1
                 end
+
             end
             if response.code.to_i != 200
                 puts response.inspect.red
