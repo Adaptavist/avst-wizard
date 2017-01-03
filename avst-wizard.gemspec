@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "avst-wizard"
-  spec.version       = '0.0.28'
+  spec.version       = '0.0.30'
   spec.authors       = ["Martin Brehovsky"]
   spec.email         = ["mbrehovsky@adaptavist.com"]
   spec.summary       = %q{Avstwizard}
@@ -24,6 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hiera_loader", ">= 0.0.2"
   spec.add_dependency "hiera-eyaml"
   spec.add_dependency "colorize", ">= 0.7.3"
-  spec.add_dependency "nokogiri"
+  spec.add_dependency "nokogiri", "1.6.8"
 end
 
