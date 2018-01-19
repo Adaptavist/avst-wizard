@@ -1,0 +1,72 @@
+---
+
+required_config:
+    '/setup/setuplicense.action':
+        licenseString: "license"
+    '/setup/setupdbchoice-start.action':
+        dbConfigInfo.databaseUrl: "database_url"
+        dbConfigInfo.userName: "database_user"
+        dbConfigInfo.password: "database_pass"
+    '/setup/setupadministrator-start.action':
+        username: "admin_user"
+        fullName: "admin_full_name"
+        email: "admin_email"
+        password: "admin_pass"
+
+stages:
+    '/setup/setupstart.action':
+        post_url: 'setup/dosetupstart.action'
+        values:
+            setupType: "custom"
+            setup-next-button: "Next"
+    '/setup/selectbundle.action':
+        post_url: 'setup/doselectbundle.action'
+        values:
+            pluginKeys: ""
+            setup-next-button: "Next"
+    '/setup/setuplicense.action':
+        post_url: 'setup/dosetuplicense.action'
+        values:
+            selectedPluginKeys: ""
+            confLicenseString: "%{license}"
+            setupTypeCustom: "Next"
+    '/setup/setupdbchoice-start.action':
+        post_url: 'setup/setupdbtype.action'
+        values:
+            dbConfigInfo.databaseType: "%{database_type}"
+            dbConfigInfo.simple: "false"
+            dbConfigInfo.hostname:
+            dbConfigInfo.port:
+            dbConfigInfo.databaseName:
+            dbConfigInfo.serviceName:
+            dbConfigInfo.databaseUrl: "%{database_url}"
+            dbConfigInfo.userName: "%{database_user}"
+            dbConfigInfo.password: "%{database_pass}"
+            database:
+    '/setup/setupdata-start.action':
+        post_url: 'setup/setupdata.action'
+        values:
+            dbchoiceSelect: "Empty Site"
+            contentChoice: "blank"
+    '/setup/setupusermanagementchoice-start.action':
+        post_url: 'setup/setupusermanagementchoice.action'
+        values:
+            userManagementChoice: "internal"
+            internal: "Manage users and groups within Confluence"
+    '/setup/setupadministrator-start.action':
+        post_url: 'setup/setupadministrator.action'
+        values:
+            username: "%{admin_user}"
+            fullName: "%{admin_full_name}"
+            email: "%{admin_email}"
+            password: "%{admin_pass}"
+            confirm: "%{admin_pass}"
+            setup-next-button: "Next"
+    '/setup/finishsetup.action':
+        final: true
+    '/dashboard.action':
+        final: true
+    '/welcome.action':
+        final: true
+    '/login.action':
+        final: true
