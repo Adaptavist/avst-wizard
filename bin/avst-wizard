@@ -17,7 +17,8 @@ require 'hiera_loader'
 require 'docopt'
 require 'advanced_hash'
 require 'yaml'
-require 'colorize'
+require 'rainbow/refinement'
+using Rainbow
 require 'erb'
 
 avst_wizard_base="#{File.expand_path("../../", __FILE__)}"
