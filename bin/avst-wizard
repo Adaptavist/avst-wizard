@@ -36,6 +36,7 @@ Options:
   -n, --hostname HOST                            Hostname for the server
   -p, --product_type PRODUCT_TYPE                Type of atlassian product (jira, confluence,...)
   -b, --base_url BASE_URL                        Url where the product is accessible
+  -t, --context_path CONTEXT_PATH               The context_path, if used, e.g /jira
   -c, --hiera_config CONFIG                      Hiera config file
   -f, --custom_config CUSTOM                     Contains key-values that will be available to hiera to configure stages [default: #{avst_wizard_base}/config/config.yaml]
   -p, --use_tomcat_port PORT                     Use tomcat port to connect to the application
@@ -54,6 +55,7 @@ end
 hostname     = options["--hostname"]
 product_type = options["--product_type"]
 base_url     = options["--base_url"]
+context_path     = options["--context_path"]
 use_tomcat_port = options["--use_tomcat_port"]
 
 hiera_config = options["--hiera_config"]
@@ -147,7 +149,7 @@ begin
         host_url = nil
         puts "Going via #{base_url}"
     end
-    runner = AvstWizard::AvstWizard.new(base_url, required_config, url_required_part, host_url)
+    runner = AvstWizard::AvstWizard.new(base_url, context_path, required_config, url_required_part, host_url)
 
 
     # wait for app to start  
