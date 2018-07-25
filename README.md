@@ -23,10 +23,13 @@ avst-wizard --hostname hostname --product_type product_type --base_url url --hie
 - hostname - will reference custom hiera config
 - product_type   - the product, one of (bamboo, confluence, crowd, fisheye, jira, stash)
 - url            - url to access the instance, http://jira.vagrant or http://jira.vagrant:8090
+- context_path   - context path of the url
 - hiera_config   - custom hiera.yaml file, defaults to hiera.yaml in project root
 - custom_config  - file with required params setup, defaults to config/config.yaml
 - ops            - Prints out required parameters to set for specified product
 -p, --use_tomcat_port PORT  - Use tomcat port to connect to the application
+
+An example: avst-wizard --custom_config /tmp/avst-wizard.yaml --product_type jira --base_url https://server.adaptavist.com/jira --context_path /jira --version 6.4.14
 
 ## Default usage and configuration
 

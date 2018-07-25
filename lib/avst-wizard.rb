@@ -24,7 +24,7 @@ module AvstWizard
 
         attr_writer :atl_token
 
-        def initialize(url, required_config = {}, url_required_part=nil, host_url)
+        def initialize(url, context_path, required_config = {}, url_required_part=nil, host_url)
             @url = url
             @cookie = ""
             @current_url = ""
@@ -32,6 +32,7 @@ module AvstWizard
             @required_config = required_config
             @url_required_part = url_required_part
             @host_url = host_url
+            @context_path = context_path
         end
 
         # Does GET requests to url, follows redirects, stores cookies and xsrf.token if present
@@ -109,11 +110,11 @@ module AvstWizard
             else
                 # in Jira 7.1.7 location is databaseSetup.jspa not secure/databaseSetup.jspa
                 if @url_required_part and !location.include? "/#{@url_required_part}/"
-                    "#{@url}/#{@url_required_part}/#{location}"
+                    "#{@url}/#{@url_required_part}/#{remove_context_path(location)}"
                 else
                     # if required url part is present prepend url
                     # TODO: better check with regexp
-                    "#{@url}#{location}"
+                    "#{@url}#{remove_context_path(location)}"
                 end
             end 
             
@@ -131,7 +132,11 @@ module AvstWizard
         
         # get rid of params and other trash
         def get_current_url
-            @current_url.split(";")[0].split("?")[0]
+            remove_context_path(@current_url)
+        end
+
+        def remove_context_path(url)
+            @context_path ? url.split(";")[0].split("?")[0].sub(@context_path, "") : url.split(";")[0].split("?")[0]
         end
 
         #  get the value from the page's element
@@ -233,10 +238,10 @@ module AvstWizard
                 response = http.request(req)
                 puts "Response: #{response.inspect}".yellow
                 puts "Location: #{response['location'].to_s}".yellow
-                puts "Current : #{@url}#{@current_url}".yellow
+                puts "Current : #{@url}#{get_current_url}".yellow
                 # puts "BODY: #{response.body}"
                 redirected = true
-                if response['location'] and !"#{@url}/#{@current_url}".include? response['location']
+                if response['location'] and !"#{@url}/#{get_current_url}".include? response['location']
                     redirection_url = compose_redirection_url(response['location'])
                     @current_url = URI.parse(redirection_url).request_uri
                 else
@@ -255,7 +260,7 @@ module AvstWizard
                 # follow redirects, if redirected
                 if redirected and redirected == true
                     puts "Doing the redirection... #{redirected}".yellow
-                    get_stage_and_fetch_cookie("#{@url}#{@current_url}")
+                    get_stage_and_fetch_cookie("#{@url}#{get_current_url}")
                 else
                     # in case the app is waiting for an event
                     if wait_for_next_state != nil
