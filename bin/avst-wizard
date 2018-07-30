@@ -151,7 +151,7 @@ begin
     end
     runner = AvstWizard::AvstWizard.new(base_url, context_path, required_config, url_required_part, host_url)
 
-
+    initial_path = context_path ? context_path : "/"
     # wait for app to start  
     # until get_stage returns recognized state or time out
     number_of_retries = 60
@@ -159,7 +159,7 @@ begin
     code = runner.get_stage_and_fetch_cookie
     to_search_for = runner.get_current_url
     puts "Searching for #{to_search_for}"
-    if to_search_for != "/" and final_stages_config[%r{#{to_search_for}}] != nil
+    if to_search_for != initial_path and final_stages_config[%r{#{to_search_for}}] != nil
         not_recognized = false
     else
         not_recognized = true
@@ -176,7 +176,7 @@ begin
         code = runner.get_stage_and_fetch_cookie
         to_search_for = runner.get_current_url
         puts "Looping: Searching for #{to_search_for}"
-        if to_search_for != "/" and code.to_i == 200 and final_stages_config[%r{#{to_search_for}}] != nil
+        if to_search_for != initial_path and code.to_i == 200 and final_stages_config[%r{#{to_search_for}}] != nil
             not_recognized = false
         else
             puts "Stage with url #{to_search_for} not recognized, retrying in 5 secs, attempt #{counter}/#{number_of_retries}, response code #{code}".yellow
@@ -187,7 +187,7 @@ begin
     retries = 0
     done = false
     called = false
-    while !done and to_search_for != "/"
+    while !done and to_search_for != initial_path
         puts "Searching for config for #{to_search_for}".green
         stage_config = final_stages_config[%r{#{to_search_for}}]
         unless stage_config
