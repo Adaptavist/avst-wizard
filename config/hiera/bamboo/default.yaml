@@ -29,12 +29,12 @@ stages:
         values:
             instanceName: "%{instance_name}"
             baseUrl: "%{base_url}"
-            installDir: "%{install_dir}"
             configDir: "%{install_dir}/home/xml-data/configuration"
             buildDir: "%{install_dir}/home/xml-data/builds"
             buildWorkingDir: "%{install_dir}/home/xml-data/build-dir"
             artifactsDir: "%{install_dir}/home/artifacts"
-            brokerUrl: "tcp://0.0.0.0:54663?wireFormat.maxInactivityDuration=300000"
+            repositoryLogsDir: "%{install_dir}/home/xml-data/repository-specs"
+            brokerUrl: "nio://0.0.0.0:54663?wireFormat.maxInactivityDuration=300000"
             save: "Continue"
     '/setup/setupDatabase.action':
         wait_for_next_state: 20
