@@ -22,7 +22,7 @@ stages:
                 parse_atl_token: true
                 post_url: 'setup'
                 values:
-                    locale: "en_us"
+                    locale: "en_US"
                     step: "database"
                     internal: "false"
                     type: "%{database_type}"
