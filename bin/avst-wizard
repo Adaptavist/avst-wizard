@@ -220,9 +220,17 @@ begin
             else
                 wait_for_next_state = nil
             end
+
+            # in case we know we have to wait for service to start properly  
+            if found['wait_before_post']
+                wait_before_post = found['wait_before_post'].to_i
+            else
+                wait_before_post = nil
+            end
+
             url = "#{base_url}/#{found['post_url']}"
-            puts "Posting to #{url} with params: #{found['values']} and with retry: #{wait_for_next_state}".green
-            runner.post_form(found['values'], url, wait_for_next_state )
+            puts "Posting to #{url} with params: #{found['values']} and with retry: wait_before_post: #{wait_before_post} wait_for_next_state: #{wait_for_next_state}".green
+            runner.post_form(found['values'], url, wait_for_next_state, wait_before_post )
         # in case no further url defined or stage marked as final, we are done 
         elsif stage_config["post_url"] == nil || stage_config["post_url"] == "" || stage_config["final"] == true 
             done = true
@@ -234,11 +242,17 @@ begin
             else
                 wait_for_next_state = nil
             end
+            
+            if stage_config['wait_before_post']
+                wait_for_next_state = stage_config['wait_before_post'].to_i
+            else
+                wait_before_post = nil
+            end
             # handles simple stages, that requires POST on the form and will wait for redirect
             url = "#{base_url}/#{stage_config['post_url']}"
             if !called
                 puts "Posting to #{url} with params: #{stage_config['values']}".green
-                runner.post_form(stage_config['values'], url, wait_for_next_state)
+                runner.post_form(stage_config['values'], url, wait_for_next_state, wait_before_post)
                 called=true
             end
         end

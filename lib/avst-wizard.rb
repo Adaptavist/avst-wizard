@@ -218,7 +218,13 @@ module AvstWizard
 
         # form params to submit form to next checkpoint, will follow redirects after POST
         # wait_for_next_state - specifies number of retries, while waiting for next stage after post
-        def post_form(params, url, wait_for_next_state=nil)
+        def post_form(params, url, wait_for_next_state=nil, wait_before_post=nil)
+            if wait_before_post != nil and wait_before_post.is_a? Integer
+                0.upto wait_before_post do |value|
+                    sleep(1)
+                    print "."
+                end
+            end
             validate_params(params, url)
             uri = URI.parse(url)
             req = Net::HTTP::Post.new(uri.request_uri)
@@ -252,6 +258,7 @@ module AvstWizard
                 # future REST requests might use different response codes
                 # For example a 201 might be returned where there is no content, but still a success
                 # In case 200 is here there may be an error in the form, maybe add some checking
+                puts "Returned response code: #{response.code}, #{response.code.to_i != 302 and response.code.to_i != 200}"
                 if response.code.to_i != 302 and response.code.to_i != 200
                     puts response.inspect.red
                     puts response.body.inspect.red

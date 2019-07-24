@@ -20,6 +20,7 @@ stages:
         substages:
             'id="database"':
                 wait_for_next_state: 15
+                wait_before_post: 30
                 parse_atl_token: true
                 post_url: 'setup'
                 values:
