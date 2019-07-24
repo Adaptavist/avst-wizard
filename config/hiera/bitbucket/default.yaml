@@ -19,6 +19,7 @@ stages:
         complex: true
         substages:
             'id="database"':
+                wait_for_next_state: 15
                 parse_atl_token: true
                 post_url: 'setup'
                 values:
